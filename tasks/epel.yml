@@ -1,0 +1,15 @@
+---
+- name: Install redhat-lsb
+  sudo: yes
+  yum:
+    name: redhat-lsb
+    state: present
+
+- name: Reread ansible_lsb facts
+  setup: filter=ansible_lsb*
+
+- name: Install EPEL repo.
+  sudo: yes
+  yum:
+    name: epel-release
+    state: present

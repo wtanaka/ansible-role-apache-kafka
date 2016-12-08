@@ -1,0 +1,24 @@
+---
+- name: install {{item}} with default package manager
+  action: "{{backcompat_pkg_mgr}} name={{item}}"
+  sudo: yes
+  when: >
+    package_names is defined and
+    (backcompat_pkg_mgr == "yum" or backcompat_pkg_mgr == "apt")
+  with_items: package_names
+
+# Handle dnf case for Fedora
+- name: "check if {{package_names | join(' ')}} exists"
+  command: "rpm -q {{package_names | join(' ')}}"
+  changed_when: False
+  ignore_errors: True
+  register: package_exists_result
+  when: package_names is defined and backcompat_pkg_mgr == "dnf"
+
+# Use command since dnf was only added as a module in ansible 1.9.0
+- name: install {{package_names | join (' ')}} with dnf
+  command: dnf install -y {{package_names | join(' ')}}
+  sudo: yes
+  when: >
+    package_names is defined and backcompat_pkg_mgr == "dnf" and
+    package_exists_result|failed

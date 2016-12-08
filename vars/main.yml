@@ -1,0 +1,5 @@
+---
+kafka_basename: "kafka_{{kafka_scala_version}}-{{kafka_version}}"
+kafka_archive: "{{kafka_basename}}.tgz"
+kafka_url: '{{kafka_mirror}}/{{kafka_version}}/{{kafka_archive}}'
+kafka_install_dir: "{{kafka_install_chdir}}/{{kafka_basename}}"

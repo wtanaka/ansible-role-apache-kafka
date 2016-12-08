@@ -1,0 +1,6 @@
+---
+- name: Create kafka user
+  sudo: True
+  user:
+    name: "{{kafka_user}}"
+    comment: "Kafka user"

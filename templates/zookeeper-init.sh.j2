@@ -1,0 +1,16 @@
+#!/bin/sh
+# Copyright (C) 2016 Wesley Tanaka
+
+case $1 in
+   start)
+      echo $$ > /var/run/zookeeper.pid;
+      exec 2>&1 {{kafka_install_dir}}/bin/zookeeper-server-start.sh \
+         {{kafka_install_dir}}/config/zookeeper.properties > /var/log/zookeeper.out
+      ;;
+    stop)  
+      kill `cat /var/run/zookeeper.pid`
+      ;;
+    *)  
+      echo "usage: zookeeper {start|stop}" ;;
+esac
+exit 0

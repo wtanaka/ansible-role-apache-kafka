@@ -1,0 +1,5 @@
+check process zookeeper with pidfile /var/run/zookeeper.pid
+  start program = "/etc/init.d/zookeeper.sh start"
+    as uid {{kafka_user}}
+  stop program = "/etc/init.d/zookeeper.sh stop"
+    as uid {{kafka_user}}

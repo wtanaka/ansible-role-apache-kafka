@@ -1,0 +1,155 @@
+---
+- include: compat.yml
+
+- include: include_vars.yml
+
+# Install EPEL
+- include: epel.yml
+  when: ansible_distribution == 'CentOS'
+
+- include: Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: install_package_names.yml
+
+- include: create_user.yml
+
+- name: Download kafka
+  command: wget -O /tmp/{{kafka_archive}} {{kafka_url}}
+  args:
+    creates: /tmp/{{kafka_archive}}
+
+- name: Check if kafka is installed
+  stat: path={{kafka_install_dir}}
+  register: install
+
+- name: Unpack kafka
+  command: tar xvfoz "/tmp/{{kafka_archive}}"
+  sudo: True
+  when: (install.stat.isdir is not defined or not install.stat.isdir)
+  args:
+    chdir: "{{kafka_install_chdir}}"
+    creates: "{{kafka_install_dir}}"
+
+- name: Chown to kafka
+  sudo: True
+  file:
+    path: "{{kafka_install_dir}}"
+    owner: "{{kafka_user}}"
+    recurse: yes
+    state: directory
+
+- name: Make logs dir
+  sudo: True
+  file:
+    path: "{{kafka_install_dir}}/logs"
+    owner: "{{kafka_user}}"
+    state: directory
+
+- name: Make pid file
+  sudo: True
+  copy:
+    content: ""
+    dest: "/var/run/zookeeper.pid"
+    owner: "{{kafka_user}}"
+    force: no
+
+- name: Make log file
+  sudo: True
+  copy:
+    content: ""
+    dest: "/var/log/zookeeper.out"
+    owner: "{{kafka_user}}"
+    force: no
+
+- name: Install zookeeper init wrapper
+  sudo: True
+  template: >
+    src=zookeeper-init.sh.j2
+    dest=/etc/init.d/zookeeper.sh
+    owner=root
+    mode=0755
+
+- name: Make monit dir
+  sudo: True
+  file:
+    path: "{{kafka_monit_conf_dir}}"
+    owner: root
+    recurse: yes
+    state: directory
+
+- name: Install monit config for zookeeper
+  sudo: True
+  template: >
+    src=zookeeper.conf.j2
+    dest={{kafka_monit_conf_dir}}/zookeeper.conf
+    owner=root
+  notify: restart monit
+
+########## Kafka Brokers
+
+- name: Make pid file
+  sudo: True
+  with_items: "{{kafka_brokers}}"
+  copy:
+    content: ""
+    dest: "{{item.pid_filename}}"
+    owner: "{{kafka_user}}"
+    force: no
+
+- name: Make log file
+  sudo: True
+  with_items: "{{kafka_brokers}}"
+  copy:
+    content: ""
+    dest: "{{item.log_filename}}"
+    owner: "{{kafka_user}}"
+    force: no
+
+- name: Install kafka broker server config
+  sudo: True
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=server.properties.j2
+    dest={{kafka_install_dir}}/config/{{item.config_filename}}
+    owner={{kafka_user}}
+  notify: restart monit
+
+- name: Install kafka init wrapper
+  sudo: True
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=kafka-init.sh.j2
+    dest=/etc/init.d/{{item.init_wrapper_filename}}
+    owner=root
+    mode=0755
+
+- name: Install monit config for kafka
+  sudo: True
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=kafka.conf.j2
+    dest={{kafka_monit_conf_dir}}/{{item.init_wrapper_filename}}.conf
+    owner=root
+  notify: restart monit
+
+- name: Make sure monit is started
+  sudo: True
+  service: name=monit state=started
+  # Does not work in CentOS7 or Fedora in CircleCI
+  when: not (is_integration_test is defined and is_integration_test and
+      (ansible_os_family == "RedHat" or ansible_distribution == "CentOS"))
+
+#- name: Check service
+#  sudo: True
+#  command: monit summary kafka
+#  register: kafka_status
+#  changed_when: False
+#
+#- name: Start service
+#  sudo: True
+#  command: monit start kafka
+#  when: "'Running' not in kafka_status.stdout"
