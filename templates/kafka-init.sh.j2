@@ -3,13 +3,13 @@
 
 case $1 in
    start)
-      echo $$ > {{item.pid_filename}};
-      exec 2>&1 {{kafka_install_dir}}/bin/kafka-server-start.sh \
-         {{kafka_install_dir}}/config/{{item.config_filename}} > \
-         {{item.log_filename}}
+      {{kafka_install_dir}}/bin/kafka-server-start.sh \
+         {{kafka_install_dir}}/config/{{item.config_filename}} 2>&1 > \
+         {{item.log_filename}} &
+      echo $! > {{item.pid_filename}};
       ;;
     stop)  
-      kill `cat /var/run/{{item.pid_filename}}`
+      kill `cat {{item.pid_filename}}`
       ;;
     *)  
       echo "usage: kafka {start|stop}" ;;
