@@ -1,3 +1,8 @@
-{% for config_key, config_value in item.config_contents.iteritems() %}
+# broker.id must be different for each broker
+broker.id={{item.broker_id}}
+listeners={{item.listeners}}
+# A comma seperated list of directories under which to store log files
+log.dirs=/tmp/kafka-logs-{{item.broker_id}}
+{% for config_key, config_value in kafka_config_contents.iteritems() %}
 {{config_key}}={{config_value}}
 {% endfor %}

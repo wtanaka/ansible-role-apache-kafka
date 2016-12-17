@@ -1,5 +1,5 @@
-check process {{item.init_wrapper_filename}} with pidfile {{item.pid_filename}}
-  start program = "/etc/init.d/{{item.init_wrapper_filename}} start"
+check process {{kafka_init_wrapper_prefix}}{{item.broker_id}}.sh with pidfile {{kafka_pid_prefix}}{{item.broker_id}}.pid
+  start program = "/etc/init.d/{{kafka_init_wrapper_prefix}}{{item.broker_id}}.sh start"
     as uid {{kafka_user}}
-  stop program = "/etc/init.d/{{item.init_wrapper_filename}} stop"
+  stop program = "/etc/init.d/{{kafka_init_wrapper_prefix}}{{item.broker_id}}.sh stop"
     as uid {{kafka_user}}
