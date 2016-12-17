@@ -49,30 +49,6 @@
     owner: "{{kafka_user}}"
     state: directory
 
-- name: Make pid file
-  sudo: True
-  copy:
-    content: ""
-    dest: "/var/run/zookeeper.pid"
-    owner: "{{kafka_user}}"
-    force: no
-
-- name: Make log file
-  sudo: True
-  copy:
-    content: ""
-    dest: "/var/log/zookeeper.out"
-    owner: "{{kafka_user}}"
-    force: no
-
-- name: Install zookeeper init wrapper
-  sudo: True
-  template: >
-    src=zookeeper-init.sh.j2
-    dest=/etc/init.d/zookeeper.sh
-    owner=root
-    mode=0755
-
 - name: Make monit dir
   sudo: True
   file:
@@ -80,14 +56,6 @@
     owner: root
     recurse: yes
     state: directory
-
-- name: Install monit config for zookeeper
-  sudo: True
-  template: >
-    src=zookeeper.conf.j2
-    dest={{kafka_monit_conf_dir}}/zookeeper.conf
-    owner=root
-  notify: restart monit
 
 ########## Kafka Brokers
 
