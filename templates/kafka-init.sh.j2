@@ -4,12 +4,12 @@
 case $1 in
    start)
       {{kafka_install_dir}}/bin/kafka-server-start.sh \
-         {{kafka_install_dir}}/config/{{item.config_filename}} 2>&1 > \
-         {{item.log_filename}} &
-      echo $! > {{item.pid_filename}};
+         {{kafka_install_dir}}/config/{{kafka_config_prefix}}{{item.broker_id}}.properties 2>&1 > \
+         {{kafka_log_prefix}}{{item.broker_id}}.out &
+      echo $! > {{kafka_pid_prefix}}{{item.broker_id}}.pid;
       ;;
     stop)  
-      kill `cat {{item.pid_filename}}`
+      kill `cat {{kafka_pid_prefix}}{{item.broker_id}}.pid`
       ;;
     *)  
       echo "usage: kafka {start|stop}" ;;
