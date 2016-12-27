@@ -9,6 +9,7 @@ kafka_init_wrapper_prefix: "kafka-"
 kafka_pid_prefix: "/var/run/kafka-"
 kafka_config_prefix: "server-"
 kafka_log_prefix: "/var/log/kafka-"
+# kafka_delete_topic_enable: "false"
 # broker_id must be different for each broker
 kafka_brokers:
 - broker_id: 0
