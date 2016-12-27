@@ -6,3 +6,6 @@ log.dirs=/tmp/kafka-logs-{{item.broker_id}}
 {% for config_key, config_value in kafka_config_contents.iteritems() %}
 {{config_key}}={{config_value}}
 {% endfor %}
+{% for config_key, config_value in kafka_more_config.iteritems() %}
+{{config_key}}={{config_value}}
+{% endfor %}
