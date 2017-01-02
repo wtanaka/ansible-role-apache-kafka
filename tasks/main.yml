@@ -17,30 +17,7 @@
 
 - include: create_user.yml
 
-- name: Download kafka
-  command: wget -O /tmp/{{kafka_archive}} {{kafka_url}}
-  args:
-    creates: /tmp/{{kafka_archive}}
-
-- name: Check if kafka is installed
-  stat: path={{kafka_install_dir}}
-  register: install
-
-- name: Unpack kafka
-  command: tar xvfoz "/tmp/{{kafka_archive}}"
-  sudo: True
-  when: (install.stat.isdir is not defined or not install.stat.isdir)
-  args:
-    chdir: "{{kafka_install_chdir}}"
-    creates: "{{kafka_install_dir}}"
-
-- name: Chown to kafka
-  sudo: True
-  file:
-    path: "{{kafka_install_dir}}"
-    owner: "{{kafka_user}}"
-    recurse: yes
-    state: directory
+- include: untar_kafka.yml
 
 - name: Make logs dir
   sudo: True

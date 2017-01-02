@@ -1,0 +1,40 @@
+---
+- name: Check if kafka is installed
+  stat: path={{kafka_install_dir}}
+  register: install
+
+- name: Download kafka
+  command: wget -O /tmp/{{kafka_archive}} {{kafka_url}}
+  args:
+    creates: /tmp/{{kafka_archive}}
+  when: (install.stat.isdir is not defined or not install.stat.isdir)
+
+- name: Make unpack directory
+  sudo: True
+  file:
+    path: "{{kafka_tmp_unpack_dir}}"
+    owner: "{{kafka_user}}"
+    state: directory
+  when: (install.stat.isdir is not defined or not install.stat.isdir)
+
+- name: Unpack kafka
+  command: tar xvfoz "/tmp/{{kafka_archive}}" --strip-components 1
+  sudo: True
+  when: (install.stat.isdir is not defined or not install.stat.isdir)
+  args:
+    chdir: "{{kafka_tmp_unpack_dir}}"
+
+- name: Move into place
+  command: mv {{kafka_tmp_unpack_dir}} {{kafka_install_dir}}
+  sudo: True
+  when: (install.stat.isdir is not defined or not install.stat.isdir)
+  args:
+    creates: "{{kafka_install_dir}}"
+
+- name: Chown to kafka
+  sudo: True
+  file:
+    path: "{{kafka_install_dir}}"
+    owner: "{{kafka_user}}"
+    recurse: yes
+    state: directory
