@@ -24,6 +24,7 @@ Configuring the role in the playbook:
     - hosts: servers
       roles:
          - role: wtanaka.apache-kafka
+           # Does not support embedded single quote characters
            kafka_env_variables:
              KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m"
 
