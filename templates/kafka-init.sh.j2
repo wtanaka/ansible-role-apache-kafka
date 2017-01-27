@@ -1,5 +1,15 @@
 #!/bin/sh
 # Copyright (C) 2016 Wesley Tanaka
+### BEGIN INIT INFO
+# Provides:          kafka
+# Required-Start:
+# Required-Stop:
+# Should-Start: $network
+# Default-Start:     2 3 4 5
+# Default-Stop :     0 1 6
+# Short-Description: Start Kafka broker
+# Description:       Runs kafka-server-start.sh from kafka distribution
+### END INIT INFO
 
 case $1 in
    start)
