@@ -1,6 +1,11 @@
 #!/bin/sh
 # Copyright (C) 2016 Wesley Tanaka
 
+{% for name, value in kafka_env_variables.iteritems() %}
+{{name}}='{{value}}'
+export {{name}}
+{% endfor %}
+
 case $1 in
    start)
       {{kafka_install_dir}}/bin/kafka-server-start.sh \

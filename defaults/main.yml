@@ -51,3 +51,8 @@ kafka_config_contents:
   # Timeout in ms for connecting to zookeeper
   zookeeper.connection.timeout.ms: "6000"
 kafka_more_config: {}
+# Set environment variables here, like KAFKA_HEAP_OPTS or
+# KAFKA_JVM_PERFORMANCE_OPTS etc.  Does not support embedded single
+# quote "'" characters.
+kafka_env_variables:
+  KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"
