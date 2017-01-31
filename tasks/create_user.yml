@@ -1,6 +1,14 @@
 ---
+# Workaround https://github.com/ansible/ansible/issues/6853
+- name: Check if kafka user exists
+  command: id {{kafka_user}}
+  register: id_result
+  ignore_errors: True
+  changed_when: False
+
 - name: Create kafka user
   sudo: True
   user:
     name: "{{kafka_user}}"
     comment: "Kafka user"
+  when: id_result|failed
