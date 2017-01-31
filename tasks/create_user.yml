@@ -3,6 +3,7 @@
 - name: Check if kafka user exists
   command: id {{kafka_user}}
   register: id_result
+  ignore_errors: True
 
 - name: Create kafka user
   sudo: True
