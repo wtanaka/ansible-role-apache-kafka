@@ -11,4 +11,10 @@
   user:
     name: "{{kafka_user}}"
     comment: "Kafka user"
+    shell: "{{kafka_user_shell}}"
+    password: "*"
   when: id_result|failed
+#
+#- name: Enable ssh on kafka user
+#  sudo: True
+#  command: "usermod -p '*' {{kafka_user}}"
