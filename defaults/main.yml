@@ -4,6 +4,7 @@ kafka_scala_version: "2.11"
 kafka_mirror : 'http://mirror.cogentco.com/pub/apache/kafka'
 kafka_install_chdir: "/opt"
 kafka_user: "kafka"
+kafka_user_shell: "/bin/bash"
 kafka_monit_conf_dir: "/etc/monit/conf.d"
 kafka_init_wrapper_prefix: "kafka-"
 kafka_pid_prefix: "/var/run/kafka-"
