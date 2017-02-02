@@ -5,7 +5,7 @@
   when: >
     package_names is defined and
     (backcompat_pkg_mgr == "yum" or backcompat_pkg_mgr == "apt")
-  with_items: package_names
+  with_items: "{{ package_names }}"
 
 # Handle dnf case for Fedora
 - name: "check if {{package_names | join(' ')}} exists"
