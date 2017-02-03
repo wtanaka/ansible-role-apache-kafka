@@ -4,7 +4,7 @@
 wtanaka.apache-kafka
 ====================
 
-Installs Apache kafka
+Installs Apache kafka.  Keep it up via monit.
 
 Requires that you have java installed already, e.g. using
 https://galaxy.ansible.com/wtanaka/oracle-java/
