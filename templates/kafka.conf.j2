@@ -3,3 +3,4 @@ check process {{kafka_init_wrapper_prefix}}{{item.broker_id}}.sh with pidfile {{
     as uid {{kafka_user}}
   stop program = "/etc/init.d/{{kafka_init_wrapper_prefix}}{{item.broker_id}}.sh stop"
     as uid {{kafka_user}}
+{{kafka_extra_monit_config}}
