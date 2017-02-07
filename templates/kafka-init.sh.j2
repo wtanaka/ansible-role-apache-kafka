@@ -23,10 +23,13 @@ case $1 in
          {{kafka_log_prefix}}{{item.broker_id}}.out &
       echo $! > {{kafka_pid_prefix}}{{item.broker_id}}.pid;
       ;;
-    stop)  
+   stop)
       kill `cat {{kafka_pid_prefix}}{{item.broker_id}}.pid`
       ;;
-    *)  
-      echo "usage: kafka {start|stop}" ;;
+   # Kafka does not currently have a graceful reload per
+   # https://issues.apache.org/jira/browse/KAFKA-1229
+   *)
+      echo "usage: kafka {start|stop}"
+      ;;
 esac
 exit 0
