@@ -41,7 +41,7 @@
   with_items: "{{kafka_brokers}}"
   copy:
     content: ""
-    dest: "{{kafka_pid_prefix}}{{item.broker_id}}.pid"
+    dest: "{{kafka_pid_directory}}{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.pid"
     owner: "{{kafka_user}}"
     force: no
 
@@ -50,7 +50,7 @@
   with_items: "{{kafka_brokers}}"
   copy:
     content: ""
-    dest: "{{kafka_log_prefix}}{{item.broker_id}}.out"
+    dest: "{{kafka_log_directory}}{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.out"
     owner: "{{kafka_user}}"
     force: no
 
@@ -59,7 +59,7 @@
   with_items: "{{kafka_brokers}}"
   template: >
     src=server.properties.j2
-    dest={{kafka_install_dir}}/config/{{kafka_config_prefix}}{{item.broker_id}}.properties
+    dest={{kafka_install_dir}}/config/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.properties
     owner={{kafka_user}}
   notify: restart monit
 
@@ -68,7 +68,7 @@
   with_items: "{{kafka_brokers}}"
   template: >
     src=kafka-init.sh.j2
-    dest=/etc/init.d/{{kafka_init_wrapper_prefix}}{{item.broker_id}}.sh
+    dest=/etc/init.d/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.sh
     owner=root
     mode=0755
 
@@ -77,7 +77,7 @@
   with_items: "{{kafka_brokers}}"
   template: >
     src=kafka.conf.j2
-    dest={{kafka_monit_conf_dir}}/{{kafka_init_wrapper_prefix}}{{item.broker_id}}.conf
+    dest={{kafka_monit_conf_dir}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.conf
     owner=root
   notify: restart monit
 
