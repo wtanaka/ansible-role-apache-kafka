@@ -54,6 +54,16 @@
     owner: "{{kafka_user}}"
     force: no
 
+- name: Make topic log directory
+  sudo: True
+  file:
+    path: "{%if 'log_dirs' in item%}{{item.log_dirs}}{%else%}{{kafka_default_topic_log_directory_prefix}}kafka-logs-{{item.broker_id}}{%endif%}"
+    owner: "{{kafka_user}}"
+    force: no
+    recurse: yes
+    state: directory
+  with_items: "{{kafka_brokers}}"
+
 - name: Install kafka broker server config
   sudo: True
   with_items: "{{kafka_brokers}}"

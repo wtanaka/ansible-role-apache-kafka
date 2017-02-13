@@ -2,6 +2,7 @@
 kafka_version: "0.10.0.1"
 kafka_scala_version: "2.11"
 kafka_mirror: 'http://archive.apache.org/dist/kafka'
+kafka_dl_tmp_dir: "/tmp"
 kafka_install_chdir: "/opt"
 kafka_user: "kafka"
 kafka_user_shell: "/bin/bash"
@@ -16,8 +17,7 @@ kafka_log_directory: "/var/log/"
 kafka_default_file_basename_prefix: "kafka-"
 # The default log directory folder in the case where a broker_id is
 # specified and the filename is not overridden by the broker config.
-# TODO: Move this into a more permanent location like /var
-kafka_default_topic_log_directory_prefix: "/tmp/"
+kafka_default_topic_log_directory_prefix: "/var/lib/kafka/"
 
 kafka_config_prefix: "server-"
 # kafka_delete_topic_enable: "false"
@@ -28,8 +28,7 @@ kafka_brokers:
   # Approach 1 -- specify filenames explicitly:
   # Optional -- use to specify the log/pid/monit conf filenames
   file_basename: "kafka"
-  # TODO: Move this into a more permanent location like /var
-  log_dirs: "/tmp/kafka-logs-kafka"
+  log_dirs: "/var/lib/kafka-logs"
   # Approach 2 -- specify broker_id explicitly and base filenames on
   # it:
   # broker_id: 0

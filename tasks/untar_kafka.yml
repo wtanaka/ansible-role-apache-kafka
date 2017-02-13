@@ -4,9 +4,9 @@
   register: install
 
 - name: Download kafka
-  command: wget -O /tmp/{{kafka_archive}} {{kafka_url}}
+  command: wget -O {{kafka_dl_tmp_dir}}/{{kafka_archive}} {{kafka_url}}
   args:
-    creates: /tmp/{{kafka_archive}}
+    creates: "{{kafka_dl_tmp_dir}}/{{kafka_archive}}"
   when: (install.stat.isdir is not defined or not install.stat.isdir)
 
 - name: Make unpack directory
@@ -18,7 +18,7 @@
   when: (install.stat.isdir is not defined or not install.stat.isdir)
 
 - name: Unpack kafka
-  command: tar xvfoz "/tmp/{{kafka_archive}}" --strip-components 1
+  command: tar xvfoz "{{kafka_dl_tmp_dir}}/{{kafka_archive}}" --strip-components 1
   sudo: True
   when: (install.stat.isdir is not defined or not install.stat.isdir)
   args:
