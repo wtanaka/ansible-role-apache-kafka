@@ -41,10 +41,21 @@ Configuring the role in an appropriate `host_vars` or `group_vars` file:
       kafka_config_prefix: "server-"
       kafka_log_prefix: "/var/log/kafka-"
       # kafka_delete_topic_enable: "false"
-      # broker_id must be different for each broker
+
+      # kafka_brokers is a list of brokers to run on the machine.
+      # Usually you'd run one broker.  Each broker needs to specify
+      # either:
+      #
+      # A broker_id
+      #
+      # A file_basename and a log_dirs -- this will automatically
+      # generate a broker id in Kafka 0.9+
       kafka_brokers:
       - broker_id: 0
         listeners: "PLAINTEXT://:9092"
+      - listeners: "PLAINTEXT://:9093"
+        file_basename: kafka-9093
+        log_dirs: /var/lib/kafka/broker-9093
       kafka_config_contents:
         # The number of threads handling network requests
         num.network.threads: 3
