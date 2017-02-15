@@ -32,7 +32,7 @@ Configuring the role in an appropriate `host_vars` or `group_vars` file:
 
       kafka_version: "0.10.0.1"
       kafka_scala_version: "2.11"
-      kafka_mirror : 'http://mirror.cogentco.com/pub/apache/kafka'
+      kafka_mirror: 'http://archive.apache.org/dist/kafka'
       kafka_install_chdir: "/opt"
       kafka_user: "kafka"
       kafka_monit_conf_dir: "/etc/monit/conf.d"
