@@ -6,20 +6,21 @@ wtanaka.apache-kafka
 
 Installs Apache kafka.  Keep it up via monit.
 
-Requires that you have java installed already, e.g. using
-https://galaxy.ansible.com/wtanaka/oracle-java/
+Requires:
+
+* Java install, e.g. using https://galaxy.ansible.com/wtanaka/oracle-java/
+* Zookeeper install, e.g. using https://galaxy.ansible.com/wtanaka/zookeeper/
 
 Example Playbook
 ----------------
 
-Simple default install
-
+Just including the role will install a simple default installation
 
     - hosts: servers
       roles:
          - role: wtanaka.apache-kafka
 
-Configuring the role in the playbook:
+You can configure the role in the playbook:
 
     - hosts: servers
       roles:
@@ -28,7 +29,7 @@ Configuring the role in the playbook:
            kafka_env_variables:
              KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m"
 
-Configuring the role in an appropriate `host_vars` or `group_vars` file:
+Or using variables in an appropriate `host_vars` or `group_vars` file:
 
       kafka_version: "0.10.0.1"
       kafka_scala_version: "2.11"
@@ -98,6 +99,9 @@ Configuring the role in an appropriate `host_vars` or `group_vars` file:
       # quote "'" characters.
       kafka_env_variables:
         KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"
+
+The full set of configuration options available are visible in
+[defaults/main.yml](defaults/main.yml)
 
 License
 -------
