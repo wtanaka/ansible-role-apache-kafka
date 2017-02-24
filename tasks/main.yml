@@ -90,13 +90,24 @@
     dest={{kafka_monit_conf_dir}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.conf
     owner=root
   notify: restart monit
+  when: kafka_monit_enabled
+
+- name: Uninstall monit config for kafka
+  sudo: True
+  with_items: "{{kafka_brokers}}"
+  file:
+    path: "{{kafka_monit_conf_dir}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.conf"
+    state: absent
+  notify: restart monit
+  when: not kafka_monit_enabled
 
 - name: Make sure monit is started
   sudo: True
   service: name=monit state=started
   # Does not work in CentOS7 or Fedora in CircleCI
-  when: not (is_integration_test is defined and is_integration_test and
-      (ansible_os_family == "RedHat" or ansible_distribution == "CentOS"))
+  when: kafka_monit_enabled and (
+        not (is_integration_test is defined and is_integration_test and
+           (ansible_os_family == "RedHat" or ansible_distribution == "CentOS")))
 
 #- name: Check service
 #  sudo: True

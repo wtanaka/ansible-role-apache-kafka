@@ -6,6 +6,7 @@ kafka_dl_tmp_dir: "/tmp"
 kafka_install_chdir: "/opt"
 kafka_user: "kafka"
 kafka_user_shell: "/bin/bash"
+kafka_monit_enabled: true
 kafka_monit_conf_dir: "/etc/monit/conf.d"
 kafka_extra_monit_config: ""
 
