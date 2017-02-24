@@ -29,7 +29,10 @@ You can configure the role in the playbook:
            kafka_env_variables:
              KAFKA_HEAP_OPTS: "-Xmx512m -Xms512m"
 
-Or using variables in an appropriate `host_vars` or `group_vars` file:
+Or using variables in an appropriate `host_vars` or `group_vars` file.
+
+The full set of configuration options available are visible in
+[defaults/main.yml](defaults/main.yml)
 
       kafka_version: "0.10.0.1"
       kafka_scala_version: "2.11"
@@ -100,8 +103,17 @@ Or using variables in an appropriate `host_vars` or `group_vars` file:
       kafka_env_variables:
         KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"
 
-The full set of configuration options available are visible in
-[defaults/main.yml](defaults/main.yml)
+### `kafka_monit_enabled`
+
+Default: `true`
+
+Set this to `false` to disable installation of a monit `.conf` file and to avoid setting monit service to `started`
+
+### `kafka_user`
+
+Default: `kafka`
+
+The operating system user that the kafka process will run as.  This role will also ensure that this user exists on the operating system.
 
 License
 -------
