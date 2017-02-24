@@ -1,5 +1,5 @@
 ---
-- name: install {{item}} with default package manager
+- name: install {{package_names | join(' ')}} with default package manager
   action: "{{backcompat_pkg_mgr}} name={{item}}"
   sudo: yes
   when: >
