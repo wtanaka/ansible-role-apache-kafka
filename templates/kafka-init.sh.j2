@@ -18,9 +18,11 @@ export {{name}}
 
 case $1 in
    start)
+      LOG_DIR='{{kafka_log_directory}}'
+      export LOG_DIR
       {{kafka_install_dir}}/bin/kafka-server-start.sh \
          {{kafka_install_dir}}/config/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.properties 2>&1 > \
-         {{kafka_log_directory}}{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.out &
+         {{kafka_log_directory}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.out &
       echo $! > {{kafka_pid_directory}}{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.pid;
       ;;
    stop)
