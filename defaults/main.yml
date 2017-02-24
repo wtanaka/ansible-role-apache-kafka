@@ -11,7 +11,7 @@ kafka_monit_conf_dir: "/etc/monit/conf.d"
 kafka_extra_monit_config: ""
 
 kafka_pid_directory: "/var/run/"
-kafka_log_directory: "/var/log/"
+kafka_log_directory: "/var/log/kafka"
 
 # The default file prefix in the case where a broker_id is specified
 # and the filename is not overridden in the broker config.

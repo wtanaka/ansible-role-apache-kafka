@@ -45,12 +45,20 @@
     owner: "{{kafka_user}}"
     force: no
 
+- name: Make log directory
+  sudo: True
+  file:
+    path: "{{kafka_log_directory}}"
+    owner: "{{kafka_user}}"
+    recurse: yes
+    state: directory
+
 - name: Make log file
   sudo: True
   with_items: "{{kafka_brokers}}"
   copy:
     content: ""
-    dest: "{{kafka_log_directory}}{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.out"
+    dest: "{{kafka_log_directory}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.out"
     owner: "{{kafka_user}}"
     force: no
 
