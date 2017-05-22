@@ -79,7 +79,7 @@
     src=server.properties.j2
     dest={{kafka_install_dir}}/config/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.properties
     owner={{kafka_user}}
-  notify: restart monit
+  notify: restart kafka
 
 - name: Install kafka init wrapper
   sudo: True
