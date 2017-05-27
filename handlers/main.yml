@@ -5,8 +5,8 @@
   when: not (is_integration_test is defined and is_integration_test and
       (ansible_os_family == "RedHat" or ansible_distribution == "CentOS"))
 
+# Kafka does not currently have a graceful reload per
+# https://issues.apache.org/jira/browse/KAFKA-1229
 - name: restart kafka
   shell: '/etc/init.d/kafka.sh stop && /etc/init.d/kafka.sh start'
   sudo: yes
-  when: not (is_integration_test is defined and is_integration_test and
-      (ansible_os_family == "RedHat" or ansible_distribution == "CentOS"))
