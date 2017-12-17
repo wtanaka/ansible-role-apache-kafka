@@ -2,6 +2,8 @@
 - name: install {{package_names | join(' ')}} with default package manager
   action: "{{backcompat_pkg_mgr}} name={{item}}"
   sudo: yes
+  register: result_default
+  until: result_default|success
   when: >
     package_names is defined and
     (backcompat_pkg_mgr == "yum" or backcompat_pkg_mgr == "apt")
@@ -19,6 +21,8 @@
 - name: install {{package_names | join (' ')}} with dnf
   command: dnf install -y {{package_names | join(' ')}}
   sudo: yes
+  register: result_dnf
+  until: result_dnf|success
   when: >
     package_names is defined and backcompat_pkg_mgr == "dnf" and
     package_exists_result|failed
