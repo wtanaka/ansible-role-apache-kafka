@@ -14,5 +14,5 @@ test:
         wget -O- bit.ly/ansibletest | env
         ANSIBLE_VERSIONS="1.4 1.4.4 1.5.4 1.7.2 1.9.2 2.0.0.2 2.1.0.0
         2.2.1.0"
-        DOCKER_IMAGES="centos:6 debian:8 fedora:21 fedora:23 ubuntu:14.04"
+        DOCKER_IMAGES="centos:6 debian:8 fedora:23 fedora:27 ubuntu:14.04"
         sh -x
