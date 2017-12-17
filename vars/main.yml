@@ -4,3 +4,4 @@ kafka_archive: "{{kafka_basename}}.tgz"
 kafka_url: '{{kafka_mirror}}/{{kafka_version}}/{{kafka_archive}}'
 kafka_install_dir: "{{kafka_install_chdir}}/kafka"
 kafka_tmp_unpack_dir: "/tmp/{{kafka_basename}}"
+epel_repofile_path: /etc/yum.repos.d/epel.repo
