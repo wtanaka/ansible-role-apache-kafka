@@ -81,6 +81,16 @@
     owner={{kafka_user}}
   notify: restart kafka
 
+- name: Install kafka systemd service
+  sudo: True
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=kafka-systemd.service.j2
+    dest=/etc/init.d/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.service
+    owner=root
+    mode=0755
+  when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
+
 - name: Install kafka init wrapper
   sudo: True
   with_items: "{{kafka_brokers}}"
@@ -89,6 +99,7 @@
     dest=/etc/init.d/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.sh
     owner=root
     mode=0755
+  when: not (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
 
 - name: Install monit config for kafka
   sudo: True
