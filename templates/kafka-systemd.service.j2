@@ -1,0 +1,16 @@
+[Unit]
+Description=Apache Kafka server (broker)
+Documentation=http://kafka.apache.org/documentation.html
+Requires=network.target remote-fs.target 
+After=network.target remote-fs.target
+
+[Service]
+Type=simple
+User=kafka
+Group=kafka
+Environment=LOG_DIR={{kafka_log_directory}}
+ExecStart={{kafka_install_dir}}/bin/kafka-server-start.sh {{kafka_install_dir}}/config/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.properties
+ExecStop={{kafka_install_dir}}/bin/kafka-server-stop.sh
+
+[Install]
+WantedBy=multi-user.target
