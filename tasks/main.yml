@@ -90,6 +90,7 @@
     owner=root
     mode=0755
   when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
+  notify: reload config
 
 - name: Install kafka init wrapper
   sudo: True
