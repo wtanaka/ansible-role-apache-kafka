@@ -9,6 +9,9 @@ Type=simple
 User=kafka
 Group=kafka
 Environment=LOG_DIR={{kafka_log_directory}}
+{% for name, value in kafka_env_variables.iteritems() %}
+Environment='{{name}}={{value}}'
+{% endfor %}
 ExecStart={{kafka_install_dir}}/bin/kafka-server-start.sh {{kafka_install_dir}}/config/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.properties
 ExecStop={{kafka_install_dir}}/bin/kafka-server-stop.sh
 
