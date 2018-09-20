@@ -11,7 +11,7 @@
 # Description:       Runs kafka-server-start.sh from kafka distribution
 ### END INIT INFO
 
-{% for name, value in kafka_env_variables.iteritems() %}
+{% for name, value in (kafka_env_variables.items() | list) %}
 {{name}}='{{value}}'
 export {{name}}
 {% endfor %}
