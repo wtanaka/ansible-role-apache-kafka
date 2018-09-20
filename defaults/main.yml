@@ -4,6 +4,8 @@ kafka_scala_version: "2.11"
 kafka_mirror: 'http://archive.apache.org/dist/kafka'
 kafka_dl_tmp_dir: "/tmp"
 kafka_install_chdir: "/opt"
+# true to force in place binary update (IE: minor version)
+kafka_force_update: false
 kafka_user: "kafka"
 kafka_user_shell: "/bin/bash"
 kafka_monit_enabled: true
