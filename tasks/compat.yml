@@ -9,7 +9,7 @@
              (apt-get update -qq && apt-get install -y python-apt)));
     fi
   register: result_python_apt
-  until: result_python_apt|success
+  until: result_python_apt is success
   when: ansible_os_family == 'Debian'
   changed_when: False
 
@@ -23,7 +23,7 @@
              (apt-get update -qq && apt-get install -y python-pycurl)));
     fi
   register: result_python_pycurl
-  until: result_python_pycurl|success
+  until: result_python_pycurl is success
   when: ansible_os_family == 'Debian'
   changed_when: False
 
@@ -35,7 +35,7 @@
        (> /dev/null command -v yum && ! > /dev/null command -v dnf && yum install -y python2-yum);
     fi
   register: result_python_yum
-  until: result_python_yum|success
+  until: result_python_yum is success
   when: ansible_os_family == 'RedHat'
   changed_when: False
 
@@ -47,7 +47,7 @@
        (> /dev/null command -v dnf && dnf install -y python2-dnf);
     fi
   register: result_python_dnf
-  until: result_python_dnf|success
+  until: result_python_dnf is success
   when: ansible_os_family == 'RedHat'
   changed_when: False
 
@@ -62,11 +62,11 @@
 
 - set_fact:
     backcompat_pkg_mgr: 'dnf'
-  when: ansible_os_family == 'RedHat' and dnf_result|success
+  when: ansible_os_family == 'RedHat' and dnf_result is success
 
 - set_fact:
     backcompat_pkg_mgr: '{{ansible_pkg_mgr}}'
-  when: ansible_os_family == 'RedHat' and dnf_result|failed
+  when: ansible_os_family == 'RedHat' and dnf_result is failed
 
 - set_fact:
     backcompat_pkg_mgr: '{{ansible_pkg_mgr}}'
@@ -92,19 +92,19 @@
 - name: install wget with non-dnf
   action: "{{backcompat_pkg_mgr}} name=wget"
   register: result_wget
-  until: result_wget|success
+  until: result_wget is success
   sudo: yes
   when: >
     (backcompat_pkg_mgr == "yum" or backcompat_pkg_mgr == "apt")
-       and wget_result|failed
+       and wget_result is failed
 
 # Install wget due to https://github.com/ansible/ansible/issues/12161
 # Use command since dnf was only added as a module in ansible 1.9.0
 - name: install wget with dnf
   command: dnf install -y wget
   register: result_wget_dnf
-  until: result_wget_dnf|success
+  until: result_wget_dnf is success
   args:
     creates: /usr/bin/wget
   sudo: yes
-  when: backcompat_pkg_mgr == "dnf" and wget_result|failed
+  when: backcompat_pkg_mgr == "dnf" and wget_result is failed

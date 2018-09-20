@@ -8,7 +8,7 @@
   args:
     creates: "{{kafka_dl_tmp_dir}}/{{kafka_archive}}"
   register: result_download_kafka
-  until: result_download_kafka|success
+  until: result_download_kafka is success
   when: (install.stat.isdir is not defined or not install.stat.isdir)
 
 - name: Make unpack directory
