@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+      - checkout
+      - run: sudo apt-get update -qq
+      - run: sudo apt-get install -y wget make ruby-bundler python-virtualenv
+      # Needed to upgrade requests[security] on Ubuntu 14.04
+      - run: sudo apt-get install -y python-dev libffi-dev libssl-dev
+      # Not needed for machine executor
+      #- setup_remote_docker
+      - run: sudo apt-get install -y docker.io
+      - run: >
+          wget -O- bit.ly/ansibletest | env
+          ANSIBLE_VERSIONS="1.4 1.4.4 1.5.4 1.7.2 1.9.2 2.0.0.2 2.1.0.0 2.2.1.0"
+          DOCKER_IMAGES="centos:6 debian:8 fedora:23 fedora:27 ubuntu:14.04"
+          sh -x
