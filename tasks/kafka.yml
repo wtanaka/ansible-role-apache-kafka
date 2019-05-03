@@ -1,0 +1,121 @@
+- name: Make logs dir
+  file:
+    path: "{{kafka_install_dir}}/logs"
+    owner: "{{kafka_user}}"
+    state: directory
+
+- name: Make monit dir
+  file:
+    path: "{{kafka_monit_conf_dir}}"
+    owner: root
+    recurse: yes
+    state: directory
+
+########## Kafka Brokers
+
+- name: Make pid file
+  with_items: "{{kafka_brokers}}"
+  copy:
+    content: ""
+    dest: "{{kafka_pid_directory}}{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.pid"
+    owner: "{{kafka_user}}"
+    force: no
+
+- name: Make log directory
+  file:
+    path: "{{kafka_log_directory}}"
+    owner: "{{kafka_user}}"
+    recurse: yes
+    state: directory
+
+- name: Make log file
+  with_items: "{{kafka_brokers}}"
+  copy:
+    content: ""
+    dest: "{{kafka_log_directory}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.out"
+    owner: "{{kafka_user}}"
+    force: no
+
+- name: Make topic log directory
+  file:
+    path: "{%if 'log_dirs' in item%}{{item.log_dirs}}{%else%}{{kafka_default_topic_log_directory_prefix}}kafka-logs-{{item.broker_id}}{%endif%}"
+    owner: "{{kafka_user}}"
+    force: no
+    recurse: yes
+    state: directory
+  with_items: "{{kafka_brokers}}"
+
+- name: Install kafka broker server config
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=server.properties.j2
+    dest={{kafka_install_dir}}/config/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.properties
+    owner={{kafka_user}}
+  register: kafka_broker_server_config_result
+
+- name: Install kafka systemd service
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=kafka-systemd.service.j2
+    dest=/etc/systemd/system/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.service
+    owner=root
+    mode=0755
+  when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
+
+- name: Install kafka init wrapper
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=kafka-init.sh.j2
+    dest=/etc/init.d/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.sh
+    owner=root
+    mode=0755
+  when: not (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
+
+- name: Install monit config for kafka
+  with_items: "{{kafka_brokers}}"
+  template: >
+    src=kafka.conf.j2
+    dest={{kafka_monit_conf_dir}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.conf
+    owner=root
+  register: monit_config_result
+  when: kafka_monit_enabled
+
+- name: Uninstall monit config for kafka
+  with_items: "{{kafka_brokers}}"
+  file:
+    path: "{{kafka_monit_conf_dir}}/{%if 'file_basename' in item%}{{item.file_basename}}{%else%}{{kafka_default_file_basename_prefix}}{{item.broker_id}}{%endif%}.conf"
+    state: absent
+  register: monit_config_result
+  when: not kafka_monit_enabled
+
+- name: Make sure monit is started
+  service: name=monit state=started
+  # Does not work in CentOS7 or Fedora in CircleCI
+  when: kafka_monit_enabled and (
+        not (is_integration_test is defined and is_integration_test and
+           (ansible_os_family == "RedHat" or ansible_distribution == "CentOS")))
+
+- name: restart monit
+  service: name=monit state=restarted
+  when: monit_config_result.changed and not (is_integration_test is defined and is_integration_test and
+      (ansible_os_family == "RedHat" or ansible_distribution == "CentOS"))
+
+# Kafka does not currently have a graceful reload per
+# https://issues.apache.org/jira/browse/KAFKA-1229
+- name: restart kafka
+  shell: '/etc/init.d/kafka.sh stop && /etc/init.d/kafka.sh start'
+  when: kafka_broker_server_config_result.changed and not (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
+
+- name: restart kafka
+  shell: 'service kafka stop && service kafka start'
+  when: kafka_broker_server_config_result.changed and (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
+
+#- name: Check service
+#  command: monit summary kafka
+#  register: kafka_status
+#  changed_when: False
+#
+#- name: Start service
+#  command: monit start kafka
+#  when: "'Running' not in kafka_status.stdout"
+

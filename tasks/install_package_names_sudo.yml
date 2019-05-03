@@ -1,6 +1,7 @@
 ---
 - name: install {{package_names | join(' ')}} with default package manager
   action: "{{backcompat_pkg_mgr}} name={{item}}"
+  sudo: yes
   register: result_default
   until: result_default|success
   # Workaround https://github.com/ansible/ansible/issues/16868 and
@@ -29,6 +30,7 @@
 # Use command since dnf was only added as a module in ansible 1.9.0
 - name: install {{package_names | join (' ')}} with dnf
   command: dnf install -y {{package_names | join(' ')}}
+  sudo: yes
   register: result_dnf
   until: result_dnf|success
   # Workaround https://github.com/ansible/ansible/issues/16868 and
