@@ -1,5 +1,6 @@
 ---
 - name: Install redhat-lsb
+  sudo: yes
   register: result_redhat_lsb
   until: result_redhat_lsb|success
   yum:
@@ -14,6 +15,7 @@
   register: epel_repofile_result
 
 - name: Install EPEL repo.
+  sudo: yes
   register: result_epel_release
   until: result_epel_release|success
   yum:

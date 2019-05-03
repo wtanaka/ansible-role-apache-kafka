@@ -1,0 +1,8 @@
+---
+- include: compat_sudo.yml
+- include: epel_sudo.yml
+  when: ansible_distribution == 'CentOS'
+- include: install_package_names_sudo.yml
+- include: create_user_sudo.yml
+- include: untar_kafka_sudo.yml
+- include: kafka_sudo.yml
