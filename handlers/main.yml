@@ -17,4 +17,8 @@
   sudo: yes  
   when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
   
+- name: reload config
+  shell: 'systemctl daemon-reload'
+  sudo: yes
+  when: (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
 
