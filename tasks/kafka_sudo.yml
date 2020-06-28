@@ -123,7 +123,7 @@
 - name: restart kafka
   shell: 'service kafka stop && service kafka start'
   sudo: yes  
-  when: kafka_broker_server_config_result.changed and (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '6')
+  when: kafka_broker_server_config_result.changed and (ansible_distribution == 'CentOS' and ansible_distribution_major_version > '7')
 
 #- name: Check service
 #  sudo: True
